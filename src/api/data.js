@@ -1,46 +1,64 @@
+import { fetchTime } from '../config/env.js'
 const users = [
   {
     avatar: 'avatar1.png',
     userName: '张三',
     userId: 'zhangsan',
     region: '河北',
+    wall: 'wall1.png'
   },
   {
-    avatar: 'avatar2.png',
+    avatar: 'avatar2.JPG',
     userName: '李四',
     userId: 'lisi',
     region: '天津',
+    wall: 'wall2.png'
   },
   {
-    avatar: 'avatar3.png',
+    avatar: 'avatar3.JPG',
     userName: '王五',
     userId: 'wangwu',
     region: '上海',
+    wall: 'wall3.png'
   },
   {
     avatar: 'avatar4.png',
     userName: 'Alice',
     userId: 'alice123',
     region: '广州',
+    wall: 'wall4.png'
   },
   {
     avatar: 'avatar5.png',
     userName: 'Tom',
     userId: 'tomwang',
     region: '深圳',
+    wall: 'wall5.png'
   },
 ];
-let now = (new Date()).valueOf();
+const now = (new Date()).valueOf();
+const lastMinute = now - 60000;
+const last5Minute = now - 60000 * 5;
+const lastHour = now -3600000;
+const lastDay = now - 86400000;
 let nextId = 7;
 let posts = [
   {
     postId: 1,
     postText: '张三的朋友圈状态',
     userId: 'zhangsan',
+    avatar: 'avatar1.png',
+    wall: 'wall1.png',
+    userName: '张三',
     createdDate: now,
     type: 'text',
     resource: [],//资源链接，图片为多个，其余都为一个
-    likes: [],//点赞用户的Id
+    interactionUser: {
+      'lisi': '李四',
+      'wangwu': '王五',
+      'zhangsan': '张三'
+    },
+    likes: ['lisi'],//点赞用户的Id
     comments: [
       {
         userId: 'lisi',//评论人
@@ -66,41 +84,62 @@ let posts = [
     postId: 2,
     postText: '张三的朋友圈状态2',
     userId: 'zhangsan',
-    createdDate: now + 60,
+    avatar: 'avatar1.png',
+    wall: 'wall1.png',
+    userName: '张三',
+    createdDate: lastMinute,
     type: 'image',
-    resource: [],//资源链接，图片为多个，其余都为一个
+    resource: ['postimage1.JPG', 'postimage2.PNG', 'postimage3.PNG'],//资源链接，图片为多个，其余都为一个
+    interactionUser: {
+      'lisi': '李四',
+    },
     likes: ['lisi'],//点赞用户的Id
   },
   {
     postId: 3,
     postText: '张三的朋友圈状态3',
     userId: 'zhangsan',
-    createdDate: now + 120,
+    avatar: 'avatar1.png',
+    wall: 'wall1.png',
+    userName: '张三',
+    createdDate: last5Minute,
     type: 'image',
-    resource: [],//资源链接，图片为多个，其余都为一个
+    resource: ['postimage2.PNG'],//资源链接，图片为多个，其余都为一个
   },
   {
     postId: 4,
     postText: '李四的朋友圈状态3',
     userId: 'lisi',
-    createdDate: now + 160,
+    avatar: 'avatar2.JPG',
+    wall: 'wall2.png',
+    userName: '李四',
+    createdDate: lastHour,
     type: 'image',
-    resource: [],//资源链接，图片为多个，其余都为一个
+    resource: ['postimage1.JPG'],//资源链接，图片为多个，其余都为一个
   },
   {
     postId: 5,
-    postText: '张三的朋友圈状态2',
-    userId: 'zhangsan',
-    createdDate: now + 180,
+    postText: '王五的朋友圈状态5',
+    userId: 'wangwu',
+    avatar: 'avatar3.JPG',
+    wall: 'wall3.png',
+    userName: '王五',
+    createdDate: lastDay,
     type: 'image',
-    resource: [],//资源链接，图片为多个，其余都为一个
+    resource: ['postimage3.PNG'],//资源链接，图片为多个，其余都为一个
+    interactionUser: {
+      'lisi': '李四',
+    },
     likes: ['lisi'],//点赞用户的Id
   },
   {
     postId: 6,
-    postText: '张三的朋友圈状态3',
+    postText: '张三的朋友圈状态6',
     userId: 'zhangsan',
-    createdDate: now + 190,
+    avatar: 'avatar1.png',
+    wall: 'wall1.png',
+    userName: '张三',
+    createdDate: lastDay - 10000,
     type: 'video',
     resource: [],//资源链接，图片为多个，其余都为一个
   },
@@ -109,32 +148,32 @@ let postThumb = [
   {
     postId: 2,
     userId: 'zhangsan',
-    ype: 'image',
-    url: 'thumb1.png',
+    type: 'image',
+    url: 'thumb1.jpg',
   },
   {
     postId: 3,
     userId: 'zhangsan',
-    ype: 'image',
+    type: 'image',
     url: 'thumb2.png',
   },
   {
     postId: 4,
     userId: 'lisi',
-    ype: 'image',
-    url: 'thumb4.png',
+    type: 'image',
+    url: 'thumb2.png',
   },
   {
     postId: 5,
     userId: 'zhangsan',
-    ype: 'image',
-    url: 'thumb5.png',
+    type: 'image',
+    url: 'thumb3.jpg',
   },
   {
     postId: 6,
     userId: 'zhangsan',
-    ype: 'video',
-    url: 'thumb6.png',
+    type: 'video',
+    url: 'thumb4.jpg',
   },
 ];
 export default {
@@ -154,14 +193,15 @@ export default {
   fetchAllPosts(userId, cb) {
     let newPost = Object.assign({}, posts[posts.length - 1]);
     newPost.postId = nextId++;
-    newPost.createdDate = new Date();
-    posts.push(newPost)
+    newPost.postText = newPost.postText + newPost.postId;
+    newPost.createdDate = (new Date()).valueOf();
+    posts.unshift(newPost)
     //数据过滤工作放在服务端，模拟调用接口返回一定数量的最新post，且是排序好的
-    setTimeout(() => cb(posts.reverse()), 100);
+    setTimeout(() => cb(posts), 100);
   },
-  fetchOwnPosts(userId) {
+  fetchOwnPosts(userId, cb) {
     //假设从服务端获取最多四条
     const results = postThumb.filter(post => post.userId === userId);
-    setTimeout(() => results.slice(0, 3), 100);
+    setTimeout(cb, fetchTime, results.slice(0, 4));
   }
 }

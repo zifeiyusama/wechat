@@ -4,25 +4,13 @@
     Album
   </div>
   <div class="content-right">
-    <img class="album-img" src="/static/avatar1.png" alt="">
-    <img class="album-img" src="/static/avatar1.png" alt="">
-    <img class="album-img" src="/static/avatar1.png" alt="">
-    <img class="album-img" src="/static/avatar1.png" alt="">
-  </div>
-  <div class="view-more"></div>
-</div>
-  <!-- <div>
-    this is the album of <span>{{ userId }}</span>
     <div class="loading" v-if="loading">
       Loading...
     </div>
-    <div>
-      <img v-for="img in posts" :src="postThumbBaseUrl + img.thumb" alt="post">
-    </div>
-    <div v-show="hasMore">
-      More
-    </div>
-  </div> -->
+    <img v-for="post in posts" class="album-img" :src="postThumbBaseUrl + post.url" alt="">
+  </div>
+  <div class="view-more" v-if="hasMore"></div>
+</div>
 </template>
 <script>
 import api from '../api/data.js'
@@ -32,21 +20,30 @@ export default {
   name: 'album',
   data() {
     return {
-      loading: false
+      loading: true,
+      posts:[],
+      postThumbBaseUrl
     }
   },
   props: ['userId'],
   computed: {
     hasMore() {
-      return this.posts.length === 4 ? ture : false;
+      return this.posts.length === 4 ? true : false;
     }
   },
   created() {
+    var that = this
     //TODO 确定界面跳转方式后要看组件更新机制是否需要修改
     this.posts = [];
     this.loading = true;
-    Promise.resolve(api.fetchOwnPosts(this.userId))
-           .then(() => this.loading = false);
+    var promise = new Promise((resolve) => {
+      api.fetchOwnPosts(this.userId, resolve)
+    });
+    //获取的数据应该更新到posts
+    promise.then((posts) => {
+      this.posts = posts;
+      this.loading = false
+    });
   }
 }
 </script>
@@ -57,7 +54,7 @@ export default {
     color: #535353;
   }
   .content-right {
-    flex: 1;
+    width: 6.64rem;
     display: flex;
     justify-content: space-between;
     margin-left: 0.36rem;

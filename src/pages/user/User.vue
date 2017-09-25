@@ -1,17 +1,6 @@
 <template>
 <div id="container">
-  <div id="header">
-    <div id="header-content">
-      <div id="header-left">
-        <span id="header-return"></span>
-        <span id="header-left-content">Discover</span>
-      </div>
-      <div id="header-center">Profile</div>
-      <div id="header-right">
-        New
-      </div>
-    </div>
-  </div>
+  <page-header></page-header>
   <div id="info">
     <img class="avatar info-left" :src="avatarBaseUrl + userInfo.avatar" alt="头像">
     <div class="info-right">
@@ -19,7 +8,7 @@
       <div class="wechat-id">Wechat ID: {{ userInfo.userId }}</div>
     </div>
   </div>
-  <div id="remark">
+  <div id="remark" v-if="!isOwn">
     <div class="remark-left">Set Remark And Tag</div>
     <div class="view-more"></div>
   </div>
@@ -41,7 +30,8 @@
     </div>
   </div>
   <div id="footer">
-    <a class="button">Message</a>
+    <a class="button button-message">Message</a>
+    <a class="button button-call" v-if="!isOwn">Free Call</a>
   </div>
 </div>
 </template>
@@ -49,6 +39,7 @@
 import { mapState, mapActions } from 'vuex'
 import Album from '../../components/Album.vue'
 import { avatarBaseUrl } from '../../config/env.js'
+import PageHeader from '../../components/Header.vue'
 
 
 export default {
@@ -58,12 +49,17 @@ export default {
       avatarBaseUrl,
     }
   },
-  components: { Album },
-  computed: mapState({
-    userInfo(state) {
-      return state.allUser[this.$route.params.userId];
+  components: { Album, PageHeader },
+  computed: {
+    ...mapState({
+      userInfo(state) {
+        return state.allUser[this.$route.params.userId];
+      },
+    }),
+    isOwn() {
+      return this.userInfo.userId === this.$store.state.currentUserId;
     }
-  }),
+  },
   methods: {
     ...mapActions(['checkoutUserInfo'])
   },
@@ -73,77 +69,12 @@ export default {
 }
 </script>
 <style scoped>
-  * {
-  padding: 0;
-  margin: 0;
-}
-html {
-  font-size: 75px;
-}
-#container {
-  overflow: hidden;
-  width: 10.0rem;
-  height: 19.2rem;
-  margin: 0 auto;
-  background: #efeff3;
-}
-  #header {
-    position: fixed;
+  #container {
+    overflow: hidden;
     width: 10.0rem;
-    height: 1.71rem;
-    z-index: 1000;
-    background: #35353a;
-    color: #fff;
-    font-size: 0.4rem;
-  }
-  #header-content {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 0.91rem;
-    height: 0.8rem;
-  }
-  #header-left {
-    position: relative;
-    margin-left: 0.36rem;
-    height: 0.8rem;
-    width: 4.0rem;
-    color: #fff;
-  }
-  #header-left-content {
-    height: 0.8rem;
-    margin-left: 0.36rem;
-  }
-  #header-center {
-    height: 0.8rem;
-    text-align: center;
-  }
-  #header-right {
-    margin-right: 0.36rem;
-    height: 0.8rem;
-    width: 4.0rem;
-    text-align: right;
-  }
-  #header-return {
-    position: absolute;
-    display: inline-block;
-    left: -0.32rem;
-    width: 0;
-    height: 0;
-    border-width: 0.24rem 0.29rem;
-    border-style: dashed solid dashed dashed;
-    border-color: transparent #fff transparent transparent;
-  }
-  #header-return:after {
-    content: "";
-    position: absolute;
-    left: -0.08rem;
-    top: -0.13rem;
-    display: block;
-    width: 0;
-    height: 0;
-    border-width: 0.13rem 0.19rem;
-    border-style: dashed solid dashed dashed;
-    border-color: transparent #35353a transparent transparent;
+    height: 17.79rem;
+    margin: 0 auto;
+    background: #efeff3;
   }
   #info {
     position: relative;
@@ -270,7 +201,14 @@ html {
     text-decoration: none;
     border-radius: 0.07rem;
     font-size: 0.4rem;
+    border: 0.01rem solid #d9d9d9;
+  }
+  .button-message {
     color: #fff;
     background: #28b11a;
+  }
+  .button-call {
+    color: #000;
+    background: #fff;
   }
 </style>

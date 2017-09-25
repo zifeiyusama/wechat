@@ -7,15 +7,16 @@ import getters from './getters'
 Vue.use(Vuex)
 const state = {
   allUser: {
-    'zhangsan': {
-      avatar: 'avatar1.png',
-    userName: '张三',
-    userId: 'zhangsan',
-    region: '河北',
+    'lisi': {
+      avatar: 'avatar2.JPG',
+      userName: '李四',
+      userId: 'lisi',
+      region: '天津',
+      wall: 'wall2.png'
     }
   },
-  currentUserId: 'zhangsan',
-  posts: []//posts不持有详细的post信息，供主页可正常展示即可
+  currentUserId: 'lisi',
+  posts: []
 }
 
 export default new Vuex.Store({
