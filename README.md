@@ -1,6 +1,6 @@
 # wechat
 
-> A Vue.js project
+> A Vue.js demo project. Not finished yet
 
 ## Build Setup
 
