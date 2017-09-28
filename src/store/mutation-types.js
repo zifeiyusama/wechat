@@ -1,4 +1,5 @@
 export const LIKE = 'LIKE'
+export const COMMENT = 'COMMENT'
 export const RECEIVE_USERS = 'RECEIVE_USERS'
 export const CHECKOUT_USERINFO = 'CHECKOUT_USERINFO'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'

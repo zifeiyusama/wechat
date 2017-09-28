@@ -94,6 +94,7 @@ let posts = [
       'lisi': '李四',
     },
     likes: ['lisi'],//点赞用户的Id
+    comments: []
   },
   {
     postId: 3,
@@ -104,6 +105,9 @@ let posts = [
     userName: '张三',
     createdDate: last5Minute,
     type: 'image',
+    likes:[],
+    comments: [],
+    interactionUser:{},
     resource: ['postimage2.PNG'],//资源链接，图片为多个，其余都为一个
   },
   {
@@ -115,6 +119,9 @@ let posts = [
     userName: '李四',
     createdDate: lastHour,
     type: 'image',
+    likes:[],
+    interactionUser:{},
+    comments: [],
     resource: ['postimage1.JPG'],//资源链接，图片为多个，其余都为一个
   },
   {
@@ -130,6 +137,7 @@ let posts = [
     interactionUser: {
       'lisi': '李四',
     },
+    comments: [],
     likes: ['lisi'],//点赞用户的Id
   },
   {
@@ -141,6 +149,9 @@ let posts = [
     userName: '张三',
     createdDate: lastDay - 10000,
     type: 'video',
+    likes:[],
+    comments: [],
+    interactionUser:{},
     resource: [],//资源链接，图片为多个，其余都为一个
   },
 ];
@@ -176,6 +187,16 @@ let postThumb = [
     url: 'thumb4.jpg',
   },
 ];
+function findUser(userId) {
+  let result;
+  for (var i = 0; i < users.length; i++) {
+    if (userId === users[i].Id) {
+      result = users[i];
+      break;
+    }
+  }
+  return result;
+}
 export default {
   fetchUser(userId, cb) {
     let user = {}
@@ -185,23 +206,50 @@ export default {
         break;
       }
     }
-    setTimeout(() => cb(user), 100);
+    setTimeout(() => cb(JSON.stringify(user)), 100);
   },
   fetchAllUsers(userId, userIdSet, cb) {
-    setTimeout(() => cb(users), 100);
+    setTimeout(() => cb(JSON.stringify(users), 100));
   },
   fetchAllPosts(userId, cb) {
     let newPost = Object.assign({}, posts[posts.length - 1]);
     newPost.postId = nextId++;
     newPost.postText = newPost.postText + newPost.postId;
     newPost.createdDate = (new Date()).valueOf();
-    posts.unshift(newPost)
+    posts.unshift(newPost);
     //数据过滤工作放在服务端，模拟调用接口返回一定数量的最新post，且是排序好的
-    setTimeout(() => cb(posts), 100);
+    setTimeout(() => cb(JSON.stringify(posts), 100));
   },
   fetchOwnPosts(userId, cb) {
     //假设从服务端获取最多四条
     const results = postThumb.filter(post => post.userId === userId);
     setTimeout(cb, fetchTime, results.slice(0, 4));
+  },
+  like(payload, cb) {
+    var result =false;
+    for (var i = 0; i < posts.length; i++) {
+      if (payload.postId == posts[i].postId) {
+        posts[i].likes.push(payload.userId);
+        posts[i].interactionUser[payload.userId] = payload.userName;
+        result = true;
+        break;
+      }
+    }
+    setTimeout(cb, fetchTime, result);
+  },
+  comment(payload, cb) {
+    var createdDate = '';
+    var comment = Object.assign({}, payload);
+    for (var i = 0; i < posts.length; i++) {
+      if (payload.postId == posts[i].postId) {
+        let post = posts[i];
+        comment.createdDate = (new Date()).valueOf()
+        post.comments.push(comment);
+        let user = findUser(post.userId)
+        post.interactionUser[payload.data.postId] = user.userName;
+        break;
+      }
+    }
+    setTimeout(cb, fetchTime, comment);
   }
 }

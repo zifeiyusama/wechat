@@ -15,19 +15,36 @@
       </a>
       <span v-show="comment.to"> &#64; <a class="comment-name" href="#">{{ users[comment.to] }}</a></span>
       ：
-      <span class="comment-content">{{ comment.content }}</span><br>
+      <span class="comment-content" @click="addComment(comment.userId, 'reply123123123')">{{ comment.content }}</span><br>
     </div>
   </div>
 </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 	export default {
 		name: 'interaction',
-    props: ['likes', 'comments', 'users'],
+    props: ['postId','likes', 'comments', 'users'],
+    methods: {
+      addComment(to, content) {
+        console.log(this.currentUser)
+        var payload = {
+          postId: this.postId,
+          comment: {
+            userId: this.currentUser.userId,
+            to: to,
+            content
+          },
+          userName: this.currentUser.userName
+        };
+        this.$store.dispatch('comment', payload);
+      }
+    },
     computed: {
+      ...mapGetters(['currentUser']),
       hasLikes(){return this.likes && this.likes.length > 0},
       hasComments(){return this.comments && this.comments.length > 0},
-      hasInteraction() { return this.hasLikes && this.hasComments }
+      hasInteraction() { return this.hasLikes || this.hasComments }
     }
 	}
 </script>

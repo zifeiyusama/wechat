@@ -1,5 +1,5 @@
 <template>
-  <div class="posts">
+  <div class="posts" @click="showedLikeButton = ''">
     <div class="post" v-for="item in items">
       <div class="post-left">
         <img :src="avatarBaseUrl + item.avatar" alt="">
@@ -11,8 +11,8 @@
           {{ item.createdDate | timeAgo }}
           <div
            class="footer-like"
-           v-if="item.userId !== currentUserId"
-           @click="toggleLikeButton(item.postId)">
+           v-if="item.userId !== currentUser.userId"
+           @click.stop="toggleLikeButton(item.postId)">
             <img class="footer-like-img" src="/static/icon/like-comment.jpg"/>
           </div>
           <transition
@@ -21,21 +21,31 @@
            leave-active-class="animated slideOutRight"
           >
             <div class="click-button" v-if="showedLikeButton === item.postId" >
-              <img class="click-img" src="/static/icon/like-button.jpg" alt="">
+              <img
+               class="click-img"
+               @click.stop="like(item)"
+               src="/static/icon/like-button.jpg"
+               alt=""
+              >
               <div class="click-line"></div>
-              <img class="click-img" src="/static/icon/comment-button.jpg" alt="">
+              <img
+               class="click-img"
+               @click.stop="comment(item.postId,'123123123')"
+               src="/static/icon/comment-button.jpg"
+               alt=""
+              >
             </div>
           </transition>
           <div class="cover"></div>
         </div>
-        <interaction :likes="item.likes" :comments="item.comments" :users="item.interactionUser"></interaction>
+        <interaction :postId="item.postId" :likes="item.likes" :comments="item.comments" :users="item.interactionUser"></interaction>
       </div>
     </div>
   </div>
 </template>
 <script>
 import Vue from 'vue'
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import Interaction from './Interaction.vue'
 import { avatarBaseUrl } from '../config/env.js'
 import animate from 'animate.css'
@@ -48,15 +58,40 @@ export default {
       showedLikeButton: ''
     }
   },
-  computed: mapState({
-    currentUserId: state => state.currentUserId
-  }),
+  computed: {
+    ...mapGetters(['currentUser'])
+  },
   props:['items'],
   components: {Interaction},
   methods: {
     toggleLikeButton(postid) {
       if (this.showedLikeButton === postid) this.showedLikeButton = '';
       else this.showedLikeButton = postid;
+    },
+    like(post) {
+      let userId = this.currentUser.userId,
+          userName = this.currentUser.userName,
+          postId = post.postId;
+      this.showedLikeButton = '';
+      if (post.likes.indexOf(userId) > -1) return;
+      this.$store.dispatch('like', {
+        userId,
+        userName,
+        postId,
+      });
+    },
+    comment(postId, content) {
+      this.showedLikeButton = '';
+      var payload = {
+        postId: postId,
+        comment: {
+          userId: this.currentUser.userId,
+          to: '',
+          content
+        },
+        userName: this.currentUser.userName
+      };
+      this.$store.dispatch('comment', payload);
     }
   }
 }
