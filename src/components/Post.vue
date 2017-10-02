@@ -1,5 +1,5 @@
 <template>
-  <div class="posts" @click="showedLikeButton = ''">
+  <div class="posts" @click="handleClobalClick()">
     <div class="post" v-for="item in items">
       <div class="post-left">
         <img :src="avatarBaseUrl + item.avatar" alt="">
@@ -30,7 +30,7 @@
               <div class="click-line"></div>
               <img
                class="click-img"
-               @click.stop="comment(item.postId,'123123123')"
+               @click.stop="comment(item.postId, '')"
                src="/static/icon/comment-button.jpg"
                alt=""
               >
@@ -38,15 +38,23 @@
           </transition>
           <div class="cover"></div>
         </div>
-        <interaction :postId="item.postId" :likes="item.likes" :comments="item.comments" :users="item.interactionUser"></interaction>
+        <interaction
+         :postId="item.postId"
+         :likes="item.likes"
+         :comments="item.comments"
+         :users="item.interactionUser"
+         @addComment="comment"
+        ></interaction>
       </div>
     </div>
+    <comment :contents="this.commentData" v-show="showCommentInput" @commentAdded="handleCommentAdded" :placeholders="commentInputHolder"></comment>
   </div>
 </template>
 <script>
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import Interaction from './Interaction.vue'
+import Comment from './Comment.vue'
 import { avatarBaseUrl } from '../config/env.js'
 import animate from 'animate.css'
 
@@ -55,14 +63,17 @@ export default {
   data() {
     return {
       avatarBaseUrl,
-      showedLikeButton: ''
+      showedLikeButton: '',
+      commentData: {},
+      showCommentInput: false,
+      commentInputHolder: ''
     }
   },
   computed: {
     ...mapGetters(['currentUser'])
   },
   props:['items'],
-  components: {Interaction},
+  components: {Interaction, Comment},
   methods: {
     toggleLikeButton(postid) {
       if (this.showedLikeButton === postid) this.showedLikeButton = '';
@@ -80,18 +91,31 @@ export default {
         postId,
       });
     },
-    comment(postId, content) {
+    comment(postId, to, toName) {
       this.showedLikeButton = '';
+      if (this.showCommentInput) {
+        this.handleCommentAdded();
+        return;
+      }
       var payload = {
         postId: postId,
         comment: {
           userId: this.currentUser.userId,
-          to: '',
-          content
+          to: to,
         },
         userName: this.currentUser.userName
       };
-      this.$store.dispatch('comment', payload);
+      this.commentData = payload;
+      if (toName) this.commentInputHolder = '@' + toName + ':';
+      this.showCommentInput = true;
+    },
+    handleCommentAdded() {
+      this.showCommentInput = false;
+      this.commentInputHolder = '';
+    },
+    handleClobalClick() {
+      this.showedLikeButton = '';
+      if(this.showCommentInput === true) this.handleCommentAdded();
     }
   }
 }
