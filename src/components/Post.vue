@@ -6,7 +6,7 @@
       </div>
       <div class="post-right">
         <div class="post-header"><a class="post-user" href="#">{{ item.userName }}</a></div>
-        <div class="post-body">{{ item.postText }}</div>
+        <post-content :post="item"></post-content>
         <div class="post-footer">
           {{ item.createdDate | timeAgo }}
           <div
@@ -55,6 +55,7 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import Interaction from './Interaction.vue'
 import Comment from './Comment.vue'
+import PostContent from './Content.vue'
 import { avatarBaseUrl } from '../config/env.js'
 import animate from 'animate.css'
 
@@ -73,7 +74,7 @@ export default {
     ...mapGetters(['currentUser'])
   },
   props:['items'],
-  components: {Interaction, Comment},
+  components: {Interaction, Comment, PostContent},
   methods: {
     toggleLikeButton(postid) {
       if (this.showedLikeButton === postid) this.showedLikeButton = '';
@@ -153,15 +154,6 @@ export default {
   }
   .post-user {
     color: #576b95;
-  }
-  .post-body {
-    flex: 1;
-    margin-top: 0.27rem;
-    height: auto;
-    line-height: 0.47rem;
-    word-wrap: break-word;
-    font-size: 0.33rem;
-    background: #fff;
   }
   .post-footer {
     position: relative;

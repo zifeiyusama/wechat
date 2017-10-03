@@ -88,8 +88,18 @@ let posts = [
     wall: 'wall1.png',
     userName: '张三',
     createdDate: lastMinute,
-    type: 'image',
-    resource: ['postimage1.JPG', 'postimage2.PNG', 'postimage3.PNG'],//资源链接，图片为多个，其余都为一个
+    type: 'image-group',
+    resource: [
+      { photo: 'postphoto1.JPG',thumb: 'postphoto1.jpg'},
+      { photo: 'postphoto2.JPG',thumb: 'postphoto2.jpg'},
+      { photo: 'postphoto3.JPG',thumb: 'postphoto3.jpg'},
+      { photo: 'postphoto4.JPG',thumb: 'postphoto4.jpg'},
+      { photo: 'postphoto5.JPG',thumb: 'postphoto5.jpg'},
+      { photo: 'postphoto6.JPG',thumb: 'postphoto6.jpg'},
+      { photo: 'postphoto7.JPG',thumb: 'postphoto7.jpg'},
+      { photo: 'postphoto8.JPG',thumb: 'postphoto8.jpg'},
+      { photo: 'postphoto9.JPG',thumb: 'postphoto9.jpg'},
+    ],
     interactionUser: {
       'lisi': '李四',
     },
@@ -104,15 +114,19 @@ let posts = [
     wall: 'wall1.png',
     userName: '张三',
     createdDate: last5Minute,
-    type: 'image',
+    type: 'article',
     likes:[],
     comments: [],
     interactionUser:{},
-    resource: ['postimage2.PNG'],//资源链接，图片为多个，其余都为一个
+    resource: {
+      url: 'www.baidu.com',
+      thumb:'postarticle.jpg',
+      text: '军队里才有的"强军"月饼，看一眼就已经流口水啦！'
+    }//资源链接，图片为多个，其余都为一个
   },
   {
     postId: 4,
-    postText: '李四的朋友圈状态3',
+    postText: '后排豪华卧铺，睡吃睡吃，蹭车真舒服。\n（买不到车票无所谓，只要脸皮厚）',
     userId: 'lisi',
     avatar: 'avatar2.JPG',
     wall: 'wall2.png',
@@ -122,18 +136,18 @@ let posts = [
     likes:[],
     interactionUser:{},
     comments: [],
-    resource: ['postimage1.JPG'],//资源链接，图片为多个，其余都为一个
+    resource: { photo: 'postphoto10.JPG',thumb: 'postthumb.jpg'},//资源链接，图片为多个，其余都为一个
   },
   {
     postId: 5,
-    postText: '王五的朋友圈状态5',
+    postText: '中国最美的青海湖',
     userId: 'wangwu',
     avatar: 'avatar3.JPG',
     wall: 'wall3.png',
     userName: '王五',
     createdDate: lastDay,
-    type: 'image',
-    resource: ['postimage3.PNG'],//资源链接，图片为多个，其余都为一个
+    type: 'video',
+    resource: { video: 'video.MP4',thumb: 'videothumb.jpg'},//资源链接，图片为多个，其余都为一个
     interactionUser: {
       'lisi': '李四',
     },
