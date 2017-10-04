@@ -1,21 +1,32 @@
 <template>
   <div id="header">
-    <div id="header-content">
+    <div id="header-content" v-if="isHome=='true'">
       <div id="header-left">
         <span id="header-return"></span>
         <span id="header-left-content">Discover</span>
       </div>
-      <div id="header-center">Profile</div>
+      <div id="header-center">Moments</div>
       <div id="header-right">
         New
+      </div>
+    </div>
+    <div id="header-content" v-else>
+      <div id="header-left">
+        <router-link id="header-link" :to="{ name: 'home'}">
+          <span id="header-return"></span>
+          <span id="header-left-content">Moments</span>
+        </router-link>
+      </div>
+      <div id="header-center">Profile</div>
+      <div id="header-right">
       </div>
     </div>
   </div>
 </template>
 <script>
-	export default {
-
-	}
+export default {
+  props: ['isHome']
+}
 </script>
 <style scoped>
 	#header {
@@ -32,6 +43,10 @@
     justify-content: space-between;
     margin-top: 0.91rem;
     height: 0.8rem;
+  }
+  #header-link {
+    color: #fff;
+    text-decoration: none;
   }
   #header-left {
     position: relative;

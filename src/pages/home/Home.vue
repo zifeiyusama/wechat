@@ -1,6 +1,6 @@
 <template>
-  <div id="container">
-    <page-header></page-header>
+  <div id="container"  infinite-wrapper>
+    <page-header isHome="true"></page-header>
     <wall :userId="currentUser.userId"></wall>
     <post :items="posts"></post>
   </div>
@@ -19,10 +19,10 @@ export default {
     ...mapState(['posts']),
   },
   methods: {
-    ...mapActions(['fetchAllPosts'])
+    ...mapActions(['fetchAllData'])
   },
   created() {
-    this.fetchAllPosts({
+    this.fetchAllData({
       userId: this.currentUser.userId
     });
   }
@@ -44,11 +44,5 @@ export default {
     min-height: 17.92rem;
     margin: 0 auto;
     background: #fff;
-  }
-  .posts {
-    margin-top: 1.11rem;
-    background: #fff;
-    height: auto;
-    width: 10.0rem;
   }
 </style>

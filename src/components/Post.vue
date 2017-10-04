@@ -1,11 +1,17 @@
 <template>
-  <div class="posts" @click="handleClobalClick()">
+  <div class="posts" @click="handleGlobalClick()">
     <div class="post" v-for="item in items">
       <div class="post-left">
-        <img :src="avatarBaseUrl + item.avatar" alt="">
+        <router-link :to="{ name: 'user', params: {userId: item.userId}}">
+          <img :src="avatarBaseUrl + item.avatar" alt="">
+        </router-link>
       </div>
       <div class="post-right">
-        <div class="post-header"><a class="post-user" href="#">{{ item.userName }}</a></div>
+        <div class="post-header">
+          <router-link class="post-user" :to="{ name: 'user', params: {userId: item.userId}}">
+            {{ item.userName }}
+          </router-link>
+        </div>
         <post-content :post="item"></post-content>
         <div class="post-footer">
           {{ item.createdDate | timeAgo }}
@@ -47,17 +53,20 @@
         ></interaction>
       </div>
     </div>
+    <infinite-loading @infinite="infiniteHandler" :distance="distance" spinner="circles" force-use-infinite-wrapper="true"></infinite-loading>
     <comment :contents="this.commentData" v-show="showCommentInput" @commentAdded="handleCommentAdded" :placeholders="commentInputHolder"></comment>
   </div>
 </template>
 <script>
 import Vue from 'vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import Interaction from './Interaction.vue'
 import Comment from './Comment.vue'
 import PostContent from './Content.vue'
+import InfiniteLoading from 'vue-infinite-loading'
 import { avatarBaseUrl } from '../config/env.js'
 import animate from 'animate.css'
+var _ = require('lodash')
 
 export default {
   name: 'post',
@@ -67,15 +76,20 @@ export default {
       showedLikeButton: '',
       commentData: {},
       showCommentInput: false,
-      commentInputHolder: ''
+      commentInputHolder: '',
+      distance: 1000,
     }
   },
   computed: {
     ...mapGetters(['currentUser'])
   },
   props:['items'],
-  components: {Interaction, Comment, PostContent},
+  components: {Interaction, Comment, PostContent, InfiniteLoading},
   methods: {
+    ...mapActions(['fetchAllPosts']),
+    infiniteHandler: _.debounce(function ($state){
+      this.fetchAllPosts({userId:''}).then(() => {$state.loaded();});
+    }, 2000),
     toggleLikeButton(postid) {
       if (this.showedLikeButton === postid) this.showedLikeButton = '';
       else this.showedLikeButton = postid;
@@ -114,7 +128,7 @@ export default {
       this.showCommentInput = false;
       this.commentInputHolder = '';
     },
-    handleClobalClick() {
+    handleGlobalClick() {
       this.showedLikeButton = '';
       if(this.showCommentInput === true) this.handleCommentAdded();
     }
@@ -122,6 +136,12 @@ export default {
 }
 </script>
 <style>
+  .posts {
+    margin-top: 1.11rem;
+    background: #fff;
+    height: auto;
+    width: 10.0rem;
+  }
   .post {
     overflow: hidden;
     width: 10.0rem;

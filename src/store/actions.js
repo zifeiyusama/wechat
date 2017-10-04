@@ -23,10 +23,9 @@ export const actions = {
     });
   },
   //获取所有用户
-  fetchUsers({ commit, getters }, payload) {
+  fetchUsers({ commit }, payload) {
     api.fetchAllUsers(
       payload.userId,
-      getters.userIdSet,
       users => commit(types.RECEIVE_USERS, JSON.parse(users))
     );
   },
@@ -46,8 +45,8 @@ export const actions = {
       }
     );
   },
-  // //获取post和用户
-  // fetchAllData({ commit, dispatch }, payload) {
-  //   dispatch('fetchAllPosts', payload).then(() => {dispatch('fetchUsers', payload)});
-  // },
+  //获取post和用户
+  fetchAllData({ commit, dispatch }, payload) {
+    dispatch('fetchAllPosts', payload).then(() => {dispatch('fetchUsers', payload)});
+  },
 }

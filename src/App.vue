@@ -1,9 +1,13 @@
 <template>
-    <router-view></router-view>
+	<transition
+  >
+  	<router-view></router-view>
+	</transition>
 </template>
 <script>
-  export default{
-  }
+import animate from 'animate.css'
+export default{
+}
 </script>
 
 <style>

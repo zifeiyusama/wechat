@@ -2,7 +2,9 @@
 <div class="wall">
   <img class="wall-img" :src="userWallBaseUrl + userInfo.wall" alt="">
   <div class="wall-name">{{ userInfo.userName }}</div>
-  <img class="wall-avatar" :src="avatarBaseUrl + userInfo.avatar"/>
+  <router-link :to="{ name: 'user', params: {userId: userId}}">
+    <img class="wall-avatar" :src="avatarBaseUrl + userInfo.avatar"/>
+  </router-link>
 </div>
 </template>
 <script>

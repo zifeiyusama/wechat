@@ -4,16 +4,18 @@
 	  <div class="heart-shape"></div>
 	  <span class="heart">♡</span>
     <span v-for="user in likes">
-      <a class="like-name" href="#">{{ users[user] }}</a>
+      <router-link class="like-name" :to="{ name:'user', params: {userId: user}}">
+        {{ users[user] }}
+      </router-link>
     </span>
 	</div>
   <div class="break-line" v-if="hasLikes && hasComments"></div>
 	<div class="comments" v-if="hasComments">
     <div v-for="comment in comments" class="comment-line">
-      <a  class="comment-name" href="#">
+      <router-link  class="comment-name" :to="{ name:'user', params: {userId: comment.userId}}">
         {{ users[comment.userId]}}
-      </a>
-      <span v-show="comment.to"> &#64; <a class="comment-name" href="#">{{ users[comment.to] }}</a></span>
+      </router-link>
+      <span v-if="comment.to != ''"> &#64; <router-link class="comment-name" :to="{ name:'user', params: {userId: comment.to}}">{{ users[comment.to] }}</router-link></span>
       ：
       <span class="comment-content" @click.stop="addComment(comment.userId, users[comment.userId])">{{ comment.content }}</span><br>
     </div>

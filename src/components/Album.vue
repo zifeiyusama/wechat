@@ -32,7 +32,6 @@ export default {
     }
   },
   created() {
-    var that = this
     //TODO 确定界面跳转方式后要看组件更新机制是否需要修改
     this.posts = [];
     this.loading = true;

@@ -22,12 +22,12 @@ export default {
     }
   },
   [types.RECEIVE_USERS] (state, payload) {
-    payload.users.forEach((user) => {
+    payload.forEach((user) => {
       Vue.set(state.allUser, user.userId, user);
     });
   },
   [types.CHECKOUT_USERINFO] (state, payload) {
-    Vue.set(state.allUser, payload.user.userId, payload.user)
+    Vue.set(state.allUser, payload.userId, payload)
   },
   [types.RECEIVE_POSTS] (state, payload) {
     //实际是增量的

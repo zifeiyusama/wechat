@@ -1,6 +1,6 @@
 <template>
 <div id="container">
-  <page-header></page-header>
+  <page-header isHome="false"></page-header>
   <div id="info">
     <img class="avatar info-left" :src="avatarBaseUrl + userInfo.avatar" alt="头像">
     <div class="info-right">
@@ -64,7 +64,7 @@ export default {
     ...mapActions(['checkoutUserInfo'])
   },
   mounted() {
-    this.checkoutUserInfo(this.userInfo.userId)
+    this.checkoutUserInfo(this.userInfo)
   }
 }
 </script>

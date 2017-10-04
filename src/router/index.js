@@ -16,14 +16,17 @@ export default new VueRouter({
     },
     {
       path: '/home',
+      name:'home',
       component: Home
     },
     {
       path: '/user/:userId',
+      name: 'user',
       component: User
     },
     {
       path: '/post',
+      name: 'post',
       component: Post
     }
   ]

@@ -222,17 +222,17 @@ export default {
     }
     setTimeout(() => cb(JSON.stringify(user)), 100);
   },
-  fetchAllUsers(userId, userIdSet, cb) {
+  fetchAllUsers(userId, cb) {
     setTimeout(() => cb(JSON.stringify(users), 100));
   },
   fetchAllPosts(userId, cb) {
     let newPost = Object.assign({}, posts[posts.length - 1]);
     newPost.postId = nextId++;
     newPost.postText = newPost.postText + newPost.postId;
-    newPost.createdDate = (new Date()).valueOf();
-    posts.unshift(newPost);
+    newPost.createdDate = lastDay - 5000 * nextId;
+    posts.push(newPost);
     //数据过滤工作放在服务端，模拟调用接口返回一定数量的最新post，且是排序好的
-    setTimeout(() => cb(JSON.stringify(posts), 100));
+    setTimeout(() => cb(JSON.stringify(posts), 1000));
   },
   fetchOwnPosts(userId, cb) {
     //假设从服务端获取最多四条
