@@ -1,5 +1,5 @@
 <template>
-<div id="container">
+<div class="container">
   <page-header isHome="false"></page-header>
   <div id="info">
     <img class="avatar info-left" :src="avatarBaseUrl + userInfo.avatar" alt="头像">
@@ -69,13 +69,6 @@ export default {
 }
 </script>
 <style scoped>
-  #container {
-    overflow: hidden;
-    width: 10.0rem;
-    height: 17.79rem;
-    margin: 0 auto;
-    background: #efeff3;
-  }
   #info {
     position: relative;
     display: flex;

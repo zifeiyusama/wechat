@@ -1,5 +1,5 @@
 <template>
-  <div id="container"  infinite-wrapper>
+  <div class="container"  infinite-wrapper>
     <page-header isHome="true"></page-header>
     <wall :userId="currentUser.userId"></wall>
     <post :items="posts"></post>
@@ -36,13 +36,5 @@ export default {
   a {
     text-decoration: none;
     color: #576b95;
-  }
-  #container {
-    overflow: auto;
-    width: 10.0rem;
-    height: 17.92rem;
-    min-height: 17.92rem;
-    margin: 0 auto;
-    background: #fff;
   }
 </style>
