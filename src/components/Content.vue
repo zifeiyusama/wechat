@@ -1,10 +1,12 @@
 <template>
 	<div class="post-body">
 		<div class="post-body-text">{{ post.postText }}</div>
-		<content-photo v-if="isPhotos" :photos="post.resource"></content-photo>
-		<content-article v-if="isArcitle" :article="post.resource"></content-article>
-		<content-single v-if="isSingle" :photo="post.resource"></content-single>
-		<content-video v-if="isVideo" :video="post.resource"></content-video>
+		<div @click.stop="handleClick">
+			<content-photo v-if="isPhotos" :photos="post.resource"></content-photo>
+			<content-article v-if="isArcitle" :article="post.resource"></content-article>
+			<content-single v-if="isSingle" :photo="post.resource"></content-single>
+			<content-video v-if="isVideo" :video="post.resource"></content-video>
+		</div>
 	</div>
 </template>
 <script>
@@ -22,8 +24,13 @@ export default {
 			isVideo: this.post.type === 'video',
 		}
 	},
-	props: ['post'],
-	components: {ContentPhoto, ContentArticle, ContentSingle, ContentVideo}
+	props: ['post', 'index'],
+	components: {ContentPhoto, ContentArticle, ContentSingle, ContentVideo},
+	methods: {
+		handleClick() {
+			this.$emit('contentClicked', this.post, this.index);
+		}
+	}
 }
 </script>
 <style scoped>

@@ -1,6 +1,6 @@
 <template>
   <div class="posts" @click="handleGlobalClick()">
-    <div class="post" v-for="item in items">
+    <div class="post" v-for="(item, index) in items" :key="item.postId">
       <div class="post-left">
         <router-link :to="{ name: 'user', params: {userId: item.userId}}">
           <img :src="avatarBaseUrl + item.avatar" alt="">
@@ -12,7 +12,7 @@
             {{ item.userName }}
           </router-link>
         </div>
-        <post-content :post="item"></post-content>
+        <post-content :post="item" :index="index" @contentClicked="handleContentClick"></post-content>
         <div class="post-footer">
           {{ item.createdDate | timeAgo }}
           <div
@@ -53,8 +53,9 @@
         ></interaction>
       </div>
     </div>
-    <infinite-loading @infinite="infiniteHandler" :distance="distance" spinner="circles" force-use-infinite-wrapper="true"></infinite-loading>
+    <infinite-loading @infinite="infiniteHandler"  spinner="circles" force-use-infinite-wrapper="true"></infinite-loading>
     <comment :contents="this.commentData" v-show="showCommentInput" @commentAdded="handleCommentAdded" :placeholders="commentInputHolder"></comment>
+    <post-detail :show='showDetail' :post="detailPost" :index="detailIndex" @closeDetail="handleCloseDetail"></post-detail>
   </div>
 </template>
 <script>
@@ -64,6 +65,7 @@ import Interaction from './Interaction.vue'
 import Comment from './Comment.vue'
 import PostContent from './Content.vue'
 import InfiniteLoading from 'vue-infinite-loading'
+import PostDetail from './PostDetail.vue'
 import { avatarBaseUrl } from '../config/env.js'
 import animate from 'animate.css'
 var _ = require('lodash')
@@ -77,14 +79,16 @@ export default {
       commentData: {},
       showCommentInput: false,
       commentInputHolder: '',
-      distance: 1000,
+      showDetail: false,
+      detailPost: null,
+      detailIndex: -1
     }
   },
   computed: {
     ...mapGetters(['currentUser'])
   },
   props:['items'],
-  components: {Interaction, Comment, PostContent, InfiniteLoading},
+  components: {Interaction, Comment, PostContent, InfiniteLoading, PostDetail},
   methods: {
     ...mapActions(['fetchAllPosts']),
     infiniteHandler: _.debounce(function ($state){
@@ -131,6 +135,16 @@ export default {
     handleGlobalClick() {
       this.showedLikeButton = '';
       if(this.showCommentInput === true) this.handleCommentAdded();
+    },
+    handleContentClick(post, index) {
+      this.detailPost = post;
+      this.detailIndex = index;
+      this.showDetail = true;
+    },
+    handleCloseDetail() {
+      this.detailPost = null;
+      this.detailIndex = -1;
+      this.showDetail = false;
     }
   }
 }

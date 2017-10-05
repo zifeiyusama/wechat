@@ -13,7 +13,7 @@ export default {
 			postBaseUrl
 		}
 	},
-	props: ['photo']
+	props: ['photo'],
 }
 </script>
 <style scoped>

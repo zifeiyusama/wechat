@@ -162,7 +162,7 @@ let posts = [
     wall: 'wall1.png',
     userName: '张三',
     createdDate: lastDay - 10000,
-    type: 'video',
+    type: 'text',
     likes:[],
     comments: [],
     interactionUser:{},
