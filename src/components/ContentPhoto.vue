@@ -1,7 +1,7 @@
 <template>
-  <div class="post-photo-container">
-    <div class="post-body-photo" v-for="item in photos">
-    	<img class="post-body-photo-img" :src="postThumbBaseUrl + item.thumb" alt="">
+  <div class="post-photo-container" @click.stop="handleClick($event)">
+    <div class="post-body-photo" v-for="(item, index) in photos">
+    	<img class="post-body-photo-img" :data-index="index" :src="postThumbBaseUrl + item.thumb" alt="">
     </div>
   </div>
 </template>
@@ -15,7 +15,14 @@ export default {
 			postBaseUrl,
 			postThumbBaseUrl
 		}
-	}
+	},
+  methods: {
+    handleClick(event) {
+      if(event.target.tagName.toLowerCase() === 'img') {
+        this.$emit('photosClick', parseInt(event.target.dataset.index));
+      }
+    }
+  }
 }
 </script>
 <style scoped>

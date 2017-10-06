@@ -2,7 +2,7 @@
 	<div class="post-body">
 		<div class="post-body-text">{{ post.postText }}</div>
 		<div @click.stop="handleClick">
-			<content-photo v-if="isPhotos" :photos="post.resource"></content-photo>
+			<content-photo v-if="isPhotos" :photos="post.resource" @photosClick="handleClick"></content-photo>
 			<content-article v-if="isArcitle" :article="post.resource"></content-article>
 			<content-single v-if="isSingle" :photo="post.resource"></content-single>
 			<content-video v-if="isVideo" :video="post.resource"></content-video>
@@ -27,8 +27,8 @@ export default {
 	props: ['post', 'index'],
 	components: {ContentPhoto, ContentArticle, ContentSingle, ContentVideo},
 	methods: {
-		handleClick() {
-			this.$emit('contentClicked', this.post, this.index);
+		handleClick(photoIndex) {
+			this.$emit('contentClicked', this.post, this.index, photoIndex);
 		}
 	}
 }

@@ -55,7 +55,7 @@
     </div>
     <infinite-loading @infinite="infiniteHandler"  spinner="circles" force-use-infinite-wrapper="true"></infinite-loading>
     <comment :contents="this.commentData" v-show="showCommentInput" @commentAdded="handleCommentAdded" :placeholders="commentInputHolder"></comment>
-    <post-detail :show='showDetail' :post="detailPost" :index="detailIndex" @closeDetail="handleCloseDetail"></post-detail>
+    <post-detail :show='showDetail' :post="detailPost" :index="detailIndex" @closeDetail="handleCloseDetail" :photoIndex="photoIndex"></post-detail>
   </div>
 </template>
 <script>
@@ -81,7 +81,8 @@ export default {
       commentInputHolder: '',
       showDetail: false,
       detailPost: null,
-      detailIndex: -1
+      detailIndex: -1,
+      photoIndex: -1
     }
   },
   computed: {
@@ -136,15 +137,17 @@ export default {
       this.showedLikeButton = '';
       if(this.showCommentInput === true) this.handleCommentAdded();
     },
-    handleContentClick(post, index) {
+    handleContentClick(post, index, photoIndex) {
       this.detailPost = post;
       this.detailIndex = index;
       this.showDetail = true;
+      this.photoIndex = photoIndex;
     },
     handleCloseDetail() {
       this.detailPost = null;
       this.detailIndex = -1;
       this.showDetail = false;
+      this.photoIndex = -1;
     }
   }
 }

@@ -5,6 +5,13 @@
       <video class="detail-content" autoplay="autoplay" v-if="!loading&&post.type==='video'">
         <source :src="sourceUrl" type="video/mp4">
       </video>
+      <photo-viewer
+       :photos="post.resource"
+       :index="photoIndex"
+       :loading="loading"
+       @loadingPhoto="loadingPhotoHandler"
+       v-if="post.type==='image-group'"
+      ></photo-viewer>
     </div>
     <div class="loader-container" v-if="loading">
       <div data-loader="circle-side"></div>
@@ -13,6 +20,7 @@
 </template>
 <script>
 import {postThumbBaseUrl, postBaseUrl,videoBaseUrl} from '../config/env.js'
+import PhotoViewer from './PhotoViewer.vue'
 
 import 'css-loading'
 
@@ -27,14 +35,20 @@ export default {
       loading: true
     }
   },
-  props: ['show', 'post', 'index'],
-
+  props: ['show', 'post', 'index', 'photoIndex'],
+  components: {PhotoViewer},
   methods: {
     handleClick() {
+      this.loading = false;
       this.$emit('closeDetail');
+    },
+    loadingPhotoHandler(val) {
+      this.loading = val;
     }
   },
   updated(){
+    //TODO:拆分组件，组件只关联父loading，细节变化交给子组件处理
+    if (this.post != null && this.post.type==='image-group') return;
     if (!this.show) {
       this.loading = true;
     }
@@ -63,7 +77,7 @@ export default {
   display: flex;
   align-items: center;
   width: 10.0rem;
-  height: 17.91rem;
+  height: 17.92rem;
   background: #000;
   z-index: 1000;
 }

@@ -40,6 +40,8 @@ html {
 body {
   font-size: 1rem;
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 .container {
 	position: absolute;
